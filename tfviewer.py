@@ -5,7 +5,8 @@ import argparse
 
 import tensorflow as tf
 from flask import Flask, render_template, send_file
-
+import cv2
+import numpy as np
 from overlays import overlay_factory
 
 app = Flask(__name__)
@@ -49,7 +50,10 @@ parser.add_argument('--bbox-ymax-key', type=str, default="image/object/bbox/ymax
 parser.add_argument('--coordinates-in-pixels', action="store_true",
                     help='Set if bounding box coordinates are saved in pixels, not in %% of image width/height.')
 
-parser.add_argument('--labels-to-highlight', type=str, default="car",
+# parser.add_argument('--labels-to-highlight', type=str, default="car",
+#                     help='Labels for which bounding boxes should be highlighted (red instead of blue).')
+
+parser.add_argument('--label-file', type=str, default="label_map.pbtxt",
                     help='Labels for which bounding boxes should be highlighted (red instead of blue).')
 
 
@@ -91,9 +95,12 @@ def preload_images(max_images):
 
       if len(images) < max_images:
         filename = feat[args.filename_key].bytes_list.value[0].decode("utf-8")
-        img =  feat[args.image_key].bytes_list.value[0]
-        
-        img_with_overlay = overlay.apply_overlay(img, feat)
+        encoded =  feat[args.image_key].bytes_list.value[0]
+        img = cv2.imdecode(np.fromstring(encoded, dtype=np.uint8), 1)
+        #check image on web
+        # img_with_overlay = overlay.apply_overlay(encoded, feat)
+        #check image on local pc
+        img_with_overlay = overlay.apply_overlay_img(img, feat)
 
         filenames.append(filename)
         images.append(img_with_overlay)
@@ -140,5 +147,5 @@ if __name__ == "__main__":
   print("Pre-loading up to %d examples.." % args.max_images)
   count = preload_images(args.max_images)
   print("Loaded %d examples" % count)
-  app.run(host=args.host, port=args.port)
+  # app.run(host=args.host, port=args.port)
 

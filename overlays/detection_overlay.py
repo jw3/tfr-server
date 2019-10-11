@@ -1,16 +1,19 @@
 import io
 from PIL import Image, ImageDraw, ImageFont
-
-
+import os,sys
+sys.path.insert(1,"../")
+import label_map_util
 default_color = 'blue'
 highlight_color = 'red'
-
-
+from matplotlib import pyplot as plt
+import numpy as np
+import cv2
 class DetectionOverlay:
   
   def __init__(self, args):
     self.args = args
-    self.labels_to_highlight = args.labels_to_highlight.split(";")
+    # self.labels_to_highlight = args.labels_to_highlight.split(";")
+    self.label_file = args.label_file
     self.font = ImageFont.truetype("./fonts/OpenSans-Regular.ttf", 12)
 
   def apply_overlay(self, image_bytes, feature):
@@ -26,8 +29,25 @@ class DetectionOverlay:
 
     bboxes = self.get_bbox_tuples(feature)
     image_bytes_with_overlay = self.draw_bboxes(image_bytes, bboxes)
+    
     return image_bytes_with_overlay
+  
+  def apply_overlay_img(self, img, feature):
+    """Apply annotation overlay over input image.
+    
+    Args:
+      img: JPEG image.
+      feature: TF Record Feature
 
+    Returns:
+      image_bytes_with_overlay: JPEG image with annotation overlay.
+    """
+
+    bboxes = self.get_bbox_tuples(feature)
+    # image_with_overlay = self.draw_bboxes(img, bboxes)
+    image_with_overlay = self.draw_bboxes_img(img, bboxes)
+    
+    return image_with_overlay
 
   def get_bbox_tuples(self, feature):
     """ From a TF Record Feature, get a list of tuples representing bounding boxes
@@ -113,3 +133,37 @@ class DetectionOverlay:
       img.save(output, format="JPEG")
       output_image = output.getvalue()
     return output_image
+
+  def draw_bboxes_img(self, img, bboxes):
+    """Draw bounding boxes onto image.
+    
+    Args:
+      img_bytes: JPEG image.
+      bboxes (list of tuples): [ (label, xmin, xmax, ymin, ymax), (label, xmin, xmax, ymin, ymax) , .. ]
+    
+    Returns:
+      img: JPEG image including bounding boxes.
+    """
+
+    width, height = img.shape[1], img.shape[0]
+
+    for bbox in bboxes:
+      
+      label, xmin, xmax, ymin, ymax = self.bboxes_to_pixels(bbox, width, height)
+      
+      xmin, xmax, ymin, ymax = int(xmin), int(xmax), int(ymin), int(ymax)
+      
+      font_scale = .8
+      thickness = 2
+      font_family = cv2.FONT_HERSHEY_SIMPLEX
+      font_size = cv2.getTextSize(label, font_family, font_scale, thickness)
+      text_point = (xmin, ymin+20)
+      temp_p = (text_point[0], text_point[1] - font_size[0][1])
+      cv2.rectangle(img, (xmin, ymin), (xmax, ymax), (255, 255, 0), thickness)
+      cv2.rectangle(img, temp_p, (text_point[0] + font_size[0][0], text_point[1] + font_size[0][1] - 5), (0, 0, 0),cv2.FILLED)
+      cv2.putText(img, label, text_point, font_family, font_scale, (255, 255, 255),lineType=cv2.LINE_AA,thickness=thickness) 
+
+      cv2.imshow("TFRECORD DATA", img)
+      cv2.waitKey(0)
+
+    return img
