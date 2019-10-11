@@ -75,7 +75,7 @@ class DetectionOverlay:
     PATH_TO_LABELS = os.path.join(self.label_file)
     category_index = label_map_util.create_category_index_from_labelmap(PATH_TO_LABELS, use_display_name=True)
     labels = ''
-    for i in range(1,len(category_index)):
+    for i in range(1,len(category_index)+1):
       labels += "'" + category_index[i]["name"] + "',"
 
     # if label in self.labels_to_highlight:
