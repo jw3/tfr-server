@@ -51,7 +51,15 @@ class DetectionOverlay:
     return bboxes
 
   def bbox_color(self, label):
-    if label in self.labels_to_highlight:
+
+    PATH_TO_LABELS = os.path.join(self.label_file)
+    category_index = label_map_util.create_category_index_from_labelmap(PATH_TO_LABELS, use_display_name=True)
+    labels = ''
+    for i in range(1,len(category_index)):
+      labels += "'" + category_index[i]["name"] + "',"
+
+    # if label in self.labels_to_highlight:
+    if label in labels:
       return highlight_color
     else:
       return default_color
