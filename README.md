@@ -12,6 +12,9 @@ The web gallery displayed with [Fotorama.io](https://fotorama.io/).
 
 # Examples
 
+output image with bbox overlayed will be displayed on PC
+# Examples OLD
+
 `python3 tfviewer.py datasets/COCO/tfrecord/coco_train.record-0000* --label-file=label_map.pbtxt`
 
 `python3 tfviewer.py datasets/COCO/tfrecord/coco_val.record-0000* --label-file=label_map.pbtxt`
