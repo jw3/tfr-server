@@ -1,6 +1,7 @@
 # TFRecord Viewer
+"ref: https://github.com/sulc/tfrecord-viewer"
 
-"How about checking your data before going deeper?"
+"How about checking your data (input: *tfrecord and label_map.pbtxt) before going deeper? (updated detection only)"
 
 Use TFRecord Viewer to browse contents of TFRecords with object detection/classification annotations.
 
@@ -11,7 +12,9 @@ The web gallery displayed with [Fotorama.io](https://fotorama.io/).
 
 # Examples
 
-`python3 tfviewer.py datasets/COCO/tfrecord/coco_train.record-00003-of-00100 --labels-to-highlight='car;truck;bus;motorcycle'`
+`python3 tfviewer.py datasets/COCO/tfrecord/coco_train.record-0000* --label-file=label_map.pbtxt`
+
+`python3 tfviewer.py datasets/COCO/tfrecord/coco_val.record-0000* --label-file=label_map.pbtxt`
 
 ![Detection example](http://cmp.felk.cvut.cz/~sulcmila/tfrecord-viewer/detection.png)
 
