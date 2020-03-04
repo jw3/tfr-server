@@ -1,6 +1,6 @@
 
-from . import detection_overlay
 from . import classification_overlay
+from . import detection_overlay
 
 
 class EmptyOverlay:

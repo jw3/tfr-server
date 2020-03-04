@@ -1,6 +1,6 @@
 import io
-from PIL import Image, ImageDraw, ImageFont
 
+from PIL import Image, ImageDraw, ImageFont
 
 default_color = 'blue'
 highlight_color = 'red'
