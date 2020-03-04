@@ -98,9 +98,9 @@ def preload_images(max_images):
         encoded =  feat[args.image_key].bytes_list.value[0]
         img = cv2.imdecode(np.fromstring(encoded, dtype=np.uint8), 1)
         #check image on web
-        # img_with_overlay = overlay.apply_overlay(encoded, feat)
+        img_with_overlay = overlay.apply_overlay(encoded, feat)
         #check image on local pc
-        img_with_overlay = overlay.apply_overlay_img(img, feat)
+        #img_with_overlay = overlay.apply_overlay_img(img, feat)
 
         filenames.append(filename)
         images.append(img_with_overlay)
@@ -147,5 +147,5 @@ if __name__ == "__main__":
   print("Pre-loading up to %d examples.." % args.max_images)
   count = preload_images(args.max_images)
   print("Loaded %d examples" % count)
-  # app.run(host=args.host, port=args.port)
-
+  app.run(host=args.host, port=args.port)
+  print('running')
